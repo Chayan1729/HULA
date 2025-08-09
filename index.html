@@ -443,7 +443,10 @@
       </div>
     </div>
   </div>
-
+  <audio id="bg-music" src="music/Mehabooba - KGF Chapter 2 (pagalall.com).mp3" loop autoplay muted></audio>
+    <button id="music-toggle" class="btn" style="position:fixed; bottom:20px; right:20px; z-index:50; background:var(--glass); color:#fff; font-size:16px;">
+        <span id="music-icon">🔊</span> Toggle Music
+    </button>
 <script>
 /* -------------------------
    Floating hearts generator
@@ -657,6 +660,100 @@
   });
 
 })(); /* galleryLightbox() end */
+
+
+
+/* ===== Music Toggle ===== */
+const music = document.getElementById('bg-music');
+let playing = false;
+
+// Unmute and start playing on first user interaction
+function enableMusic() {
+  music.muted = false;
+  music.play().catch(() => {}); // Avoid errors if blocked
+  playing = true;
+  document.removeEventListener('click', enableMusic);
+}
+document.addEventListener('click', enableMusic);
+
+document.getElementById('music-toggle').onclick = (e) => {
+  e.stopPropagation(); // prevent triggering enableMusic twice
+  if (playing) {
+    music.pause();
+  } else {
+    music.play();
+  }
+  playing = !playing;
+};
+/* -------------------------
+   Music toggle button
+   ------------------------- */
+const musicToggle = document.getElementById('music-toggle');
+musicToggle.onclick = (e) => {
+  e.stopPropagation(); // prevent triggering enableMusic twice
+  if (playing) {
+    music.pause();
+  } else {
+    music.play();
+  }
+  playing = !playing;
+};
+
+
+
+
+
+
+/* ===== Bright Magical Stars ===== */
+const canvas = document.getElementById('stars');
+const ctx = canvas.getContext('2d');
+let stars = [];
+let w, h;
+
+function initStars() {
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+  stars = [];
+  for (let i = 0; i < 100; i++) {
+    stars.push({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      r: Math.random() * 2,
+      d: Math.random() + 0.5
+    });
+  }
+}
+
+function drawStars() {
+  ctx.clearRect(0, 0, w, h);
+  stars.forEach(s => {
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `hsl(${Math.random()*360}, 100%, 80%)`;
+    ctx.fill();
+  });
+  moveStars();
+}
+
+function moveStars() {
+  stars.forEach(s => {
+    s.y += s.d;
+    if (s.y > h) {
+      s.x = Math.random() * w;
+      s.y = 0;
+    }
+  });
+}
+
+function animateStars() {
+  drawStars();
+  requestAnimationFrame(animateStars);
+}
+
+window.addEventListener('resize', initStars);
+initStars();
+animateStars();
+
 
 /* -------------------------
    Tips for adding photos / videos
